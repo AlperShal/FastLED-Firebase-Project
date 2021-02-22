@@ -13,7 +13,7 @@
 
 //Configurations
 #define LED_PIN     4
-#define NUM_LEDS    30
+#define NUM_LEDS    <Number of Leds Here>
 #define LED_TYPE    WS2812
 #define COLOR_ORDER GRB
 #define UPDATES_PER_SECOND 200
@@ -21,13 +21,13 @@ CRGB leds[NUM_LEDS];
 
 
 //Wi-Fi
-#define WIFI_SSID "Berker - Alper"
-#define WIFI_PASS "salmalikanesininmisafirleri159"
+#define WIFI_SSID "<WiFi SSID Here>"
+#define WIFI_PASS "<WiFi Password Here>"
 
 
 //Firebase
-#define FIREBASE_HOST "masa-led.firebaseio.com"
-#define FIREBASE_AUTH "3qIRUuS4qCw4dVT0j4djZCNyRvsmuLMyVPJauczP"
+#define FIREBASE_HOST "<Project Name Here>.firebaseio.com"
+#define FIREBASE_AUTH "<Project Auth Here>"
 
 
 //FastLED
