@@ -86,7 +86,6 @@ void setup() {
 void loop() {
 #define fireStatus Firebase.getString("LED_STATUS")
 #define BRIGHTNESS Firebase.getInt("BRIGHTNESS")
-#define SATURATION Firebase.getInt("SATURATION")
 #define customRed Firebase.getInt("customRed")
 #define customGreen Firebase.getInt("customGreen")
 #define customBlue Firebase.getInt("customBlue")
