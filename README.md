@@ -30,22 +30,22 @@ An Arduino strip led project made using ESP8266 and Firebase with FastLED librar
  
  - Now, we should prepare libraries and choose right board manager. (I am not going to write how to prepare ESP8266 and how to install ESP8266's board manager etc.)
  - While you are installing "esp8266" board manager please download version 2.4.2! Newer versions are not working.
- - Seventh, download and run Ardudino IDE > Tools > Manage Libraries > Search and install "FastLED" by Daniel Garcia (Latest version or v3.4.0) and "ArduinoJson" by Benoit Blanchon (**v5.13.5, not higher!**)
+ - Seventh, download, install and run Ardudino IDE, then go Tools > Manage Libraries > Search "FastLED" by Daniel Garcia (Latest version or v3.4.0) and "ArduinoJson" by Benoit Blanchon (**v5.13.5, not higher!**) and install them.
  - Eighth, download [FirebaseArduino](https://github.com/FirebaseExtended/firebase-arduino/archive/master.zip) and install it. (Sketch > Include Library > Add .ZIP Library > firebase-arduino-master.zip)
- - Nineth, save your file (Ctrl/Cmnd + S) and upload the code to your ESP8266. (Do not forget chosing ESP8266's communication port at Tools > Port)
- - Tenth, make wiring. Connect 5V electricity into strip led. (Should be 5 cables in your strip led. Color data, positive currency, negative currency, additional positive currency for ESP and additional negative currency for ESP.)
+ - Nineth, save your file (Ctrl + S) and upload the code to your ESP8266. (Do not forget chosing ESP8266's communication port at Tools > Port)
+ - Tenth, make wiring. Connect 5V electricity to strip led. (Should be 5 cables in your strip led. Color data, positive currency, negative currency, additional positive currency for ESP and additional negative currency for ESP.)
  - Eleventh, connect additional negative to G (ground), connect additional positive to VIN and connect color data to D4 pin.
- - Twelveth, press RST button and wait code to start. When code starts first led of your led strip will light in tree different color. (Colors should be light Red, Green and Blue color in order.) 
+ - Twelveth, press RST button and wait code to start. When code starts first led of your led strip will light in tree different color. (Colors should light Red, Green and Blue color in order.)
  If it is true: Congragulations, you can change your Led Mode from Firebase and use it however you want.
 LedModes; 
-Off - Turns lef off
-Custom - Custom colors
-White - White Color
-Blue - Blue Color
-Purple - Purple Color
-Study - It is my personal mode. First 20 leds in the strip lits up white colored.
-Rainbow - Floating colors.
- If it is not true: Change <#define COLOR_ORDER GRB> to what is should be. (Ex: RGB, RBG, GBR, BRG, BGR)
+ - Off - Turns lef off
+ - Custom - Custom colors
+ - White - White Color
+ - Blue - Blue Color
+ - Purple - Purple Color
+ - Study - It is my personal mode. First 20 leds in the strip lits up white colored.
+ - Rainbow - Floating colors.
+ If it is not true: Change <#define COLOR_ORDER GRB> to what it should be. (Ex: RGB, RBG, GBR, BRG, BGR)
 The End
 
 ---
