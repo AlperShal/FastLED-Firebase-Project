@@ -30,7 +30,7 @@ An Arduino strip led project made using ESP8266 and Firebase with FastLED librar
  
  - Now, we should prepare libraries and choose right board manager. (I am not going to write how to prepare ESP8266 and how to install ESP8266's board manager etc.)
  - While you are installing "esp8266" board manager please download version 2.4.2! Newer versions are not working.
- - Seventh, download, install and run Ardudino IDE, then go Tools > Manage Libraries > Search "FastLED" by Daniel Garcia (Latest version or v3.4.0) and "ArduinoJson" by Benoit Blanchon (**v5.13.5, not higher!**) and install them.
+ - Seventh go Tools > Manage Libraries > Search "FastLED" by Daniel Garcia (Latest version or v3.4.0) and "ArduinoJson" by Benoit Blanchon (**v5.13.5, not higher!**) and install them.
  - Eighth, download [FirebaseArduino](https://github.com/FirebaseExtended/firebase-arduino/archive/master.zip) and install it. (Sketch > Include Library > Add .ZIP Library > firebase-arduino-master.zip)
  - Nineth, save your file (Ctrl + S) and upload the code to your ESP8266. (Do not forget chosing ESP8266's communication port at Tools > Port)
  - Tenth, make wiring. Connect 5V electricity to strip led. (Should be 5 cables in your strip led. Color data, positive currency, negative currency, additional positive currency for ESP and additional negative currency for ESP.)
