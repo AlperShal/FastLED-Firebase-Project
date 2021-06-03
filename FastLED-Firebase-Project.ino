@@ -1,56 +1,71 @@
 //Requirements;
-//NodeMCU ESP8266, Core !!2.4.2!!, Driver, Libraries and Strip Led (WS2812)
-//ArduinoJson 5.13.5 (Can use lower version down to 5.x but not higher)
-//FirebaseArduino https://github.com/FirebaseExtended/firebase-arduino
+//NodeMCU ESP8266, Driver, Listed Libraries and Strip Led
+//Notes
+//Don't forget choosing Tools > Board: > ESP8266 Modules > NodeMCU 1.0
+//Don't forget changing details in "Configurations".
 
-//Libraries
-#include <FirebaseArduino.h>
-#include <ArduinoJson.h>
-#include <ESP8266WiFi.h>
+//Library List
 #include <FastLED.h>
-#include <string>
-
-
+#include <FirebaseESP8266.h>
+#include <string> //Not a downloadable library
+#include <ESP8266WiFi.h> //Inclueded with board manager
+#include "addons/TokenHelper.h" //Included with Firebase library
+#include "addons/RTDBHelper.h" //Included with Firebase library
 //Configurations
-#define LED_PIN     4
-#define NUM_LEDS    <Number of Leds Here>
+#define LED_PIN     D4
+#define NUM_LEDS    30
 #define LED_TYPE    WS2812
 #define COLOR_ORDER GRB
 #define UPDATES_PER_SECOND 200
-CRGB leds[NUM_LEDS];
 
 
 //Wi-Fi
-#define WIFI_SSID "<WiFi SSID Here>"
-#define WIFI_PASS "<WiFi Password Here>"
+#define WIFI_SSID "Berker - Alper"
+#define WIFI_PASS "salmalikanesininmisafirleri159"
 
 
 //Firebase
-#define FIREBASE_HOST "<Project Name Here>.firebaseio.com"
-#define FIREBASE_AUTH "<Project Auth Here>"
+#define API_KEY "AIzaSyBilbEaam89odU2WimKZIf4wyJsUqD8HJ0" //Project Settings > General > Web API Key
+#define DATABASE_URL "masa-led.firebaseio.com" //Realtime Database > Data (Copy without "https:" and "/"es)
+#define USER_EMAIL "alpersal235@gmail.com"
+#define USER_PASSWORD "GizliSifre"
 
+FirebaseData fbdo;
+FirebaseAuth auth;
+FirebaseConfig config;
+unsigned long dataMillis = 0;
+int count = 0;
 
 //FastLED
+CRGB leds[NUM_LEDS];
 CRGBPalette16 currentPalette;
 TBlendType    currentBlending;
 extern CRGBPalette16 myRedWhiteBluePalette;
 extern const TProgmemPalette16 myRedWhiteBluePalette_p PROGMEM;
 
 
-extern CRGBPalette16 myRedWhiteBluePalette;
-extern const TProgmemPalette16 myRedWhiteBluePalette_p PROGMEM;
+//Variables
+String oldFireStatus;
+int oldBRIGHTNESS;
+int oldCustomRed;
+int oldCustomGreen;
+int oldCustomBlue;
+
+String fireStatus;
+int BRIGHTNESS;
+int customRed;
+int customGreen;
+int customBlue;
 
 
-//On-time Run
 void setup() {
-  delay(3000); //Power-up safety
-
+  delay(3600); //Power-up safety
+  Serial.begin(9600); //Serial baud
 
   //FastLED
-  FastLED.addLeds<LED_TYPE, LED_PIN, COLOR_ORDER>(leds, NUM_LEDS).setCorrection(TypicalLEDStrip);
+  FastLED.addLeds<LED_TYPE, LED_PIN, COLOR_ORDER>(leds, NUM_LEDS); //.setCorrection(TypicalLEDStrip)
   currentPalette = RainbowColors_p;
   currentBlending = LINEARBLEND;
-  Serial.begin(9600);
 
 
   //Connect to Wi-Fi
@@ -59,110 +74,133 @@ void setup() {
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);
   }
-  Serial.println();
   Serial.print("Connected with IP: ");
   Serial.println(WiFi.localIP());
   Serial.println();
 
 
   //Connect to Firebase
-  Firebase.begin(FIREBASE_HOST, FIREBASE_AUTH);
+  Serial.printf("Firebase Client Version:", FIREBASE_CLIENT_VERSION);
+  config.api_key = API_KEY;
+  
+  auth.user.email = USER_EMAIL;
+  auth.user.password = USER_PASSWORD;
+  config.database_url = DATABASE_URL;
+  config.token_status_callback = tokenStatusCallback;
+
+  Firebase.begin(&config, &auth);
   Serial.println("Connected to Firebase!");
 
-  //RGB Order Test (If first led does not run in red-green-blue order change "#define COLOR_ORDER")
-  leds[0] = CRGB::Red;
-  FastLED.show();
-  delay(500);
-  leds[0] = CRGB::Green;
-  FastLED.show();
-  delay(500);
-  leds[0] = CRGB::Blue;
-  FastLED.show();
-  delay(500);
+  //Startup Cleaner
+  fireStatus = "0";
+  BRIGHTNESS = 0;
+  customRed = 0;
+  customGreen = 0;
+  customBlue = 0;
 }
 
 
-//Loop Run
 void loop() {
-#define fireStatus Firebase.getString("LED_STATUS")
-#define BRIGHTNESS Firebase.getInt("BRIGHTNESS")
-#define customRed Firebase.getInt("customRed")
-#define customGreen Firebase.getInt("customGreen")
-#define customBlue Firebase.getInt("customBlue")
+  oldFireStatus = fireStatus;
+  oldBRIGHTNESS = BRIGHTNESS;
+  oldCustomRed = customRed;
+  oldCustomGreen = customGreen;
+  oldCustomBlue = customBlue;
 
+  //Firebase Items
+  Firebase.getString(fbdo, "/LED_STATUS", fireStatus);
+  Firebase.getInt(fbdo, "/BRIGHTNESS", BRIGHTNESS);
+  Firebase.getInt(fbdo, "/customRed", customRed);
+  Firebase.getInt(fbdo, "/customGreen", customGreen);
+  Firebase.getInt(fbdo, "/customBlue", customBlue);
 
-  //Modes
-  if (fireStatus == "off") {
-    for (int i = 0; i < NUM_LEDS; i = i + 1) {
+  if(fireStatus != oldFireStatus || fireStatus == "custom"){
+    //Modes
+    if (fireStatus == "off") {
+      Serial.println("Led Turned Off");
+      for (int i = 0; i < NUM_LEDS; i = i + 1) {
       leds[i] = CRGB::Black;
-    }
-    FastLED.show();
-    Serial.println("Led Turned Off");
-  }
-
-  else if (fireStatus == "custom") {
-    FastLED.setBrightness(BRIGHTNESS);
-    delay(200);
-    for (int i = 0; i < 30; i = i + 1) {
-      leds[i].r = customRed;
-      leds[i].g = customGreen;
-      leds[i].b = customBlue;
-    }
-    FastLED.show();
-    Serial.println("Mode: Custom");
-  }
-
-  else if (fireStatus == "white") {
-    FastLED.setBrightness(BRIGHTNESS);
-    for (int i = 0; i < NUM_LEDS; i = i + 1) {
-      leds[i] = CRGB(255, 255, 255);
-    }
-    FastLED.show();
-    Serial.println("Mode: White");
-  }
-
-  else if (fireStatus == "blue") {
-    Serial.println("Mode: Blue");
-    FastLED.setBrightness(BRIGHTNESS);
-    for (int j = 0; j < NUM_LEDS; j++) {
-      leds[j] = CRGB(0, 255, 255);
-    }
-    FastLED.show();
-  }
-
-  else if (fireStatus == "purple") {
-    Serial.println("Mode: Purple");
-    FastLED.setBrightness(BRIGHTNESS);
-    for (int i = 0; i < NUM_LEDS; i = i + 1) {
-      leds[i] = CRGB(173, 31, 225);
-    }
-    FastLED.show();
-  }
-
-  else if (fireStatus == "study") {
-    Serial.println("Mode: Study");
-    FastLED.setBrightness(BRIGHTNESS);
-    for (int i = 0; i < 20; i = i + 1) {
-      leds[i] = CRGB(255, 255, 255);
-    }
-    FastLED.show();
-  }
-
-  else if (fireStatus == "rainbow") {
-    Serial.println("Mode: Rainbow");
-    FastLED.setBrightness(BRIGHTNESS);
-    for (int i = 0; i < 1000; i++) {
-      ChangePalettePeriodically();
-      static uint8_t startIndex = 0;
-      startIndex = startIndex + 1;  
-      FillLEDsFromPaletteColors( startIndex);
+      }
       FastLED.show();
-      FastLED.delay(1000 / UPDATES_PER_SECOND);
+    }
+
+    else if (fireStatus == "custom") {
+      Serial.println("Mode: Custom");
+      FastLED.setBrightness(BRIGHTNESS);
+      for (int i = 0; i < NUM_LEDS; i = i + 1) {
+        leds[i] = CRGB(customRed, customGreen, customBlue);
+      }
+      FastLED.show();
+    }
+
+    else if (fireStatus == "white") {
+      Serial.println("Mode: White");
+      FastLED.setBrightness(BRIGHTNESS);
+      for (int i = 0; i < NUM_LEDS; i = i + 1) {
+        leds[i] = CRGB(255, 255, 255);
+      }
+      FastLED.show();
+    }
+
+    else if (fireStatus == "blue") {
+      Serial.println("Mode: Blue");
+      FastLED.setBrightness(BRIGHTNESS);
+      for (int j = 0; j < NUM_LEDS; j++) {
+        leds[j] = CRGB(0, 255, 255);
+      }
+      FastLED.show();
+    }
+
+    else if (fireStatus == "purple") {
+      Serial.println("Mode: Purple");
+      FastLED.setBrightness(BRIGHTNESS);
+      for (int i = 0; i < NUM_LEDS; i = i + 1) {
+      leds[i] = CRGB(173, 31, 225);
+      }
+      FastLED.show();
+    }
+
+    else if (fireStatus == "green") {
+      Serial.println("Mode: Green");
+      FastLED.setBrightness(BRIGHTNESS);
+      for (int i = 0; i < NUM_LEDS; i = i + 1) {
+        leds[i] = CRGB(0, 255, 0);
+      }
+      FastLED.show();
+    }
+  
+    else if (fireStatus == "study") {
+      Serial.println("Mode: Study");
+      FastLED.setBrightness(BRIGHTNESS);
+      for (int i = 0; i < 20; i = i + 1) {
+        leds[i] = CRGB::Black;
+      }
+      for (int i = 0; i < 20; i = i + 1) {
+        leds[i] = CRGB(255, 255, 255);
+      }
+      FastLED.show();
+    }
+
+    else if (fireStatus == "rainbow") {
+      Serial.println("Mode: Rainbow");
+      FastLED.setBrightness(BRIGHTNESS);
+      for (int i = 0; i < 1000; i++) {
+        ChangePalettePeriodically();
+        static uint8_t startIndex = 0;
+        startIndex = startIndex + 1;  
+        FillLEDsFromPaletteColors( startIndex);
+        FastLED.show();
+        FastLED.delay(1000 / UPDATES_PER_SECOND);
+      }
+    }
+
+    else {
+      Serial.print(fireStatus);
+      Serial.println(" is an invalid command! Please change LED_STATUS!");
     }
   }
-
   else {
-    Serial.println("Invalid command! Please change LED_STATUS!");
+    delay(500);
   }
 }
 
