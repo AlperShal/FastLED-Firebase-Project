@@ -20,15 +20,15 @@
 
 
 //Wi-Fi
-#define WIFI_SSID "Berker - Alper"
-#define WIFI_PASS "salmalikanesininmisafirleri159"
+#define WIFI_SSID "Your SSID"
+#define WIFI_PASS "Your PASS"
 
 
 //Firebase
-#define API_KEY "AIzaSyBilbEaam89odU2WimKZIf4wyJsUqD8HJ0" //Project Settings > General > Web API Key
-#define DATABASE_URL "masa-led.firebaseio.com" //Realtime Database > Data (Copy without "https:" and "/"es)
-#define USER_EMAIL "alpersal235@gmail.com"
-#define USER_PASSWORD "GizliSifre"
+#define API_KEY "Your API Key" //Project Settings > General > Web API Key
+#define DATABASE_URL "Your Database URL.firebaseio.com" //Realtime Database > Data (Copy without "https:" and "/"es)
+#define USER_EMAIL "Mail you registered" //Build > Authentication > Sign-in Method and enable "Email/Password". Then in the same page go to Users and add a user.
+#define USER_PASSWORD "Password you set" //Build > Authentication > Sign-in Method and enable "Email/Password". Then in the same page go to Users and add a user.
 
 FirebaseData fbdo;
 FirebaseAuth auth;
@@ -63,7 +63,7 @@ void setup() {
   Serial.begin(9600); //Serial baud
 
   //FastLED
-  FastLED.addLeds<LED_TYPE, LED_PIN, COLOR_ORDER>(leds, NUM_LEDS); //.setCorrection(TypicalLEDStrip)
+  FastLED.addLeds<LED_TYPE, LED_PIN, COLOR_ORDER>(leds, NUM_LEDS);
   currentPalette = RainbowColors_p;
   currentBlending = LINEARBLEND;
 
