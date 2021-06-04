@@ -3,39 +3,38 @@ An Arduino strip led project made using ESP8266 and Firebase with FastLED librar
 
 **Requirements**
 
- - Equipments: NodeMCU ESP8266, WS2812 Strip Led
- - Libraries: [FastLED](https://github.com/FastLED/FastLED), [ArduinoJson](https://github.com/bblanchon/ArduinoJson), [FirebaseArduino](https://github.com/FirebaseExtended/firebase-arduino)
- - Board Manager: NodeMCU 1.0, Core 2.4.2
+ - Equipments: NodeMCU ESP8266, FastLED Supported Strip Led (I use WS2812)
+ - Libraries: [FastLED](https://github.com/FastLED/FastLED), [Firebase-ESP8266](https://github.com/mobizt/Firebase-ESP8266)
+ - Board Manager: NodeMCU 1.0, Latest (Tested 3.0.0)
  - Firebase Account
- - Unhidden WiFi for ESP8266
+ - Wifi
 
-## Usage
+## Setup
  - First, log-in into your Firebase account and create a project. (Project name does not matter.)
  - Second, create a Realtime Database and choose Test Mode while creating it.
  - Third, create "Firebase Items" in Realtime Database
 
- ![Third.1](https://i.imgur.com/m1pRiid.png) |..|..|..|![Third.2](https://i.imgur.com/c78br9I.png)
- - Fourth, take your "FIREBASE_AUTH" from Settings > Project Settings > Service Accounts > Database Secrets and paste it into the "Firebase" section in the code.
+ ![Third.2](https://i.imgur.com/c78br9I.png)
+ - Fourth, go into Build > Authentication > Sign-in Method and enable "Email/Password". Then in the same page go to Users and add a user. (As mail write your own mail, as password it doesn't have to be your mail password. It is for Firebase authentication.)
 
- ![Fourth.1](https://i.imgur.com/KZYZF9f.png)
+ ![Fourth.1](https://i.imgur.com/OWuFpXh.png)
+ ![Fourth.1](https://i.imgur.com/zDsySaG.png)
  
- - Fifth, copy your "PROJECT_HOST" from Realtime Database window and paste it into the "Firebase" section in the code. (Without "https", ":" and "/"es.)
+ - Fifth, copy your "DATABASE_URL" from Realtime Database window and copy your "API_KEY" from project settings and paste them into the "Firebase" section in the code. (Don't copy https://)
 
  ![REALTIMEDB](https://i.imgur.com/3CBe7AM.png)
- ![Firebase](https://i.imgur.com/fF7Qd8C.png)
+ ![Firebase](https://i.imgur.com/SrrGLG9.png)
 
  - Sixth, type your WiFi credentials into the "Wi-Fi" section in the code.
 
  ![WiFi](https://i.imgur.com/LYTgoFS.png)
  
  - Now, we should prepare libraries and choose right board manager. (I am not going to write how to prepare ESP8266 and how to install ESP8266's board manager etc.)
- - While you are installing "esp8266" board manager please download version 2.4.2! Newer versions are not working.
- - Seventh go Tools > Manage Libraries > Search "FastLED" by Daniel Garcia (Latest version or v3.4.0) and "ArduinoJson" by Benoit Blanchon (**v5.13.5, not higher!**) and install them.
- - Eighth, download [FirebaseArduino](https://github.com/FirebaseExtended/firebase-arduino/archive/master.zip) and install it. (Sketch > Include Library > Add .ZIP Library > firebase-arduino-master.zip)
- - Nineth, save your file (Ctrl + S) and upload the code to your ESP8266. (Do not forget chosing ESP8266's communication port at Tools > Port)
- - Tenth, make wiring. Connect 5V electricity to strip led. (Should be 5 cables in your strip led. Color data, positive currency, negative currency, additional positive currency for ESP and additional negative currency for ESP.)
- - Eleventh, connect additional negative to G (ground), connect additional positive to VIN and connect color data to D4 pin.
- - Twelveth, press RST button and wait for code to start. When code starts first led of your led strip will light in tree different color. (Leds should light Red, Green and Blue color in order.)
+ - Seventh go Tools > Manage Libraries > Search "FastLED" by Daniel Garcia and "Firebase-ESP8266" by mobizt and install them.
+ - Eighth, save your file (Ctrl + S) and upload the code to your ESP8266. (Do not forget choosing ESP8266's communication port at Tools > Port)
+ - Nineth, make wiring. Connect 5V electricity and ground to strip led. (Should be 5 cables in your strip led. Color data, positive currency, negative currency, additional positive currency for ESP and additional negative currency for ESP.)
+ - Tenth, connect additional negative to G (ground) on yourboard, connect additional positive to VIN and connect color data to D4 pin.
+ - Eleventh, press RST button and wait for code to start. When code starts first led of your led strip will light in tree different color. (Leds should light Red, Green and Blue color in order.)
  If it is true: Congragulations, you can change your Led Mode in Firebase and use it however you want.
  If it is not true: Change <#define COLOR_ORDER GRB> to what it should be. (Ex: RGB, RBG, GBR, BRG, BGR)
 LedModes; 
