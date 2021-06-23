@@ -30,11 +30,11 @@ An Arduino strip led project made using ESP8266 and Firebase with FastLED librar
  ![WiFi](https://i.imgur.com/LYTgoFS.png)
  
  - Now, we should prepare libraries and choose right board manager. (I am not going to write how to prepare ESP8266 and how to install ESP8266's board manager etc.)
- - Seventh go Tools > Manage Libraries > Search "FastLED" by Daniel Garcia and "Firebase-ESP8266" by mobizt and install them.
+ - Seventh, go Tools > Manage Libraries > Search "FastLED" by Daniel Garcia and "Firebase-ESP8266" by mobizt and install them.
  - Eighth, save your file (Ctrl + S) and upload the code to your ESP8266. (Do not forget choosing ESP8266's communication port at Tools > Port)
  - Nineth, make wiring. Connect 5V electricity and ground to strip led. (Should be 5 cables in your strip led. Color data, positive currency, negative currency, additional positive currency for ESP and additional negative currency for ESP.)
  - Tenth, connect additional negative to G (ground) on yourboard, connect additional positive to VIN and connect color data to D4 pin.
- - Eleventh, press RST button and wait for code to start. When code starts first led of your led strip will light in tree different color. (Leds should light Red, Green and Blue color in order.)
+ - Eleventh, press RST button and wait for code to start. When code starts running, first led of your led strip will light in tree different color. (Led should light Red, Green and Blue color in order.)
  If it is true: Congratulations, you can change your Led Mode in Firebase and use it however you want.
  If it is not true: Change <#define COLOR_ORDER GRB> to what it should be. (Ex: RGB, RBG, GBR, BRG, BGR)
 LedModes; 
