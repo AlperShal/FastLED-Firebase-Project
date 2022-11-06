@@ -7,7 +7,7 @@ An Arduino strip led project made using ESP8266 and Firebase with FastLED librar
  - Libraries: [FastLED](https://github.com/FastLED/FastLED), [Firebase-ESP8266](https://github.com/mobizt/Firebase-ESP8266)
  - Board Manager: NodeMCU 1.0, Latest (Tested 3.0.0)
  - Firebase Account
- - Wifi
+ - Wi-Fi
 
 ## Setup
  - First, log-in into your Firebase account and create a project. (Project name does not matter.)
